@@ -161,7 +161,7 @@ var thingClicked = this.innerHTML;
     console.log("First player O",     player_now, $("#x").val(), $("#o").val());
 	$("#x").addClass("unclickable");
 	$("#o").addClass("unclickable");
-	$("#0").val('1');
+	$("#o").val('1');
 
  //   console.log("0. you clicked: ", thingClicked);
 };
@@ -224,7 +224,7 @@ function clickButton(event) {
 	}
 	
 	if($("#o").val()==1){
-	item_clicked++;
+	<!-- item_clicked++; -->
 	<!-- console.log("O here:", this); -->
 	++index;
 	clicked_array[index]=$(this).attr('id');
@@ -397,6 +397,7 @@ function check_winner(player_now){
 function check_draw(){
 	console.log("DRAW!");
 	draw_done = 1;
+	$("#gameResult").html("DRAW!");
 	<!-- break; -->
 }
 
