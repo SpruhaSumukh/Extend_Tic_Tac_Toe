@@ -1,0 +1,408 @@
+<!DOCTYPE HTML>
+
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<style>
+.gameContainer {
+  margin: auto;
+  align: center;
+  width: 330px;
+  heiht: 330px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 100px 100px 100px;
+  background-color: lightgray;
+  border: 2px solid black;
+  text-align: center;
+}
+
+.center {
+  text-align: center;
+}
+
+.displayNone {
+  display: none;
+}
+
+.gameContainer > div {
+  border: 2px solid black;
+  background-color: white;
+  padding: 35px;
+  color: purple;
+}
+
+.gameContainer >.paintx{
+  <!-- border: 2px solid black; -->
+  background-color: red;
+  color: red;
+  <!-- padding: 35px; -->
+}
+
+.gameContainer >.painto{
+  <!-- border: 2px solid black;  -->
+  background-color:  blue;
+  color: blue;
+  <!-- padding: 35px; -->
+}
+
+.unclickable {
+  pointer-events: none;
+}
+
+.button {
+  width : 150px;
+  height: 50px;
+  border: 2px solid black;
+  background-color: lightgray;
+}
+
+.hidden {
+	display : none;
+
+}
+
+.unhide {
+	display : inherit;
+
+
+}
+
+</style>
+</head>
+<body>
+
+<h1 class="center">
+Tic-Tac-Toe
+</h1>
+<p class="center">
+Choose whether player 1 wants to play as X or O:
+<br>
+<form id="playerForm" class="center">
+ <input type="radio" name="radio" value="0" id= "x">X
+  <input type="radio" name="radio" value="0" id = "o">O
+</form>
+</p>
+
+
+
+<p class="center">
+Do you want to play a multiplayer game or play with the computer?
+<br>
+<form id="multiplayerForm" class="center">
+ <input type="radio" name="radio" value="0" id= "multiplayer">Multiplayer
+  <input type="radio" name="radio" value="0" id = "bot">Beat the Bot
+</form>
+</p>
+
+
+<!-- <br> -->
+
+<p class="center hidden" id = "dff">
+Choose the difficulty level to play:
+<br>
+<form id="difficulty" class = "center hidden">
+             <select id = "myList">
+			 <option value = "choose" id="choose">--Select--</option>
+               <option value = "beginner" id="beginner">Beginner</option>
+               <option value = "pro" id = "pro">Pro</option>
+             </select>
+</form>
+</p>
+
+
+
+<!-- <canvas id="myCanvas" class="gameContainer"> -->
+<section id="gameGrid" class="gameContainer">
+  <div class="item" id='one' value = "0"> </div>
+  <div class="item" id='two'value = "0"> </div>
+  <div class="item" id='three' value = "0"> </div>
+
+  <div class="item" id='four' value = "0"> </div>
+  <div class="item" id='five' value = "0"> </div>
+  <div class="item" id='six' value = "0"> </div>
+
+  <div class="item" id='seven'value = "0"> </div>
+  <div class="item" id='eight' value = "0"> </div>
+  <div class="item" id='nine'value = "0"> </div>
+</section>
+<!-- </canvas> -->
+
+<div id="gameResult" class="center"></div>
+<br>
+<p class= "center">
+<h2 class = "center"> 
+<button class = "center button" id = "reset" value = "Reset_1" > Reset Game </button>
+</h2>
+</p>
+
+<script>
+
+item_clicked = 0;
+won = 0;
+var clicked_array=[];
+index =0;
+draw_done=0;
+
+document.getElementById("x").onclick = function() {
+var thingClicked = this.innerHTML;
+    player_now = 1;
+    console.log("First player X", player_now, $("#x").val(), $("#o").val());
+	$("#x").addClass("unclickable");
+	$("#o").addClass("unclickable");
+	$("#x").val('1');
+
+//    console.log("0. you clicked: ", thingClicked);
+};
+
+document.getElementById("o").onclick = function() {
+var thingClicked = this.innerHTML;
+    player_now = 0;
+    console.log("First player O",     player_now, $("#x").val(), $("#o").val());
+	$("#x").addClass("unclickable");
+	$("#o").addClass("unclickable");
+	$("#0").val('1');
+
+ //   console.log("0. you clicked: ", thingClicked);
+};
+
+
+document.getElementById("multiplayer").onclick = function() {
+var thingClicked = this.innerHTML;
+    player_bot = 0;
+    console.log("Multiplayer_chosen", player_bot);
+	$("#multiplayer").addClass("unclickable");
+	$("#bot").addClass("unclickable");
+//    console.log("0. you clicked: ", thingClicked);
+};
+
+document.getElementById("bot").onclick = function() {
+var thingClicked = this.innerHTML;
+    player_bot = 1;
+    console.log("Play with computer", player_bot);
+	$("#multiplayer").addClass("unclickable");
+	$("#bot").addClass("unclickable");
+ //   console.log("0. you clicked: ", thingClicked);
+};
+
+
+/*
+document.getElementById("one").onclick = function() {
+var thingClicked = this.innerHTML;
+    console.log("0. this is: ", this);
+    console.log("0. you clicked: ", thingClicked);
+    ++player_now;
+    if(player_now%2==1)
+    document.getElementById("one").setAttribute("class","paint_o");
+    else
+    document.getElementById("one").setAttribute("class","paint_x");
+};*/
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+var array=[1,2,3,4,5,6,7,8,9,"one","two","three","four","five","six","seven","eight","nine"];
+
+function clickButton(event) {
+  $(".item").click(function(event) {
+  	var playerOne = player_now;
+
+	if(player_bot==1 && $("#myList").val()=="beginner"){
+	item_clicked++;
+
+	
+  	if($("#x").val()==1){
+	<!-- console.log("X here:", this); -->
+	++index;
+	clicked_array[index]=$(this).attr('id');
+	<!-- console.log("1clicked_array[index]:", clicked_array[index], index); -->
+	$(this).addClass("paintx unclickable");
+	$(this).html("X");
+	$(this).val(1);
+
+	<!-- player_now++; -->
+	}
+	
+	if($("#o").val()==1){
+	item_clicked++;
+	<!-- console.log("O here:", this); -->
+	++index;
+	clicked_array[index]=$(this).attr('id');
+	<!-- console.log("2clicked_array[index]:", clicked_array[index], index); -->
+	$(this).addClass("painto unclickable");
+	$(this).html("O");
+	$(this).val(2);
+
+	<!-- player_now++; -->
+	}
+	
+		
+	if(item_clicked>=5){
+	check_winner(player_now);
+	}
+	if(item_clicked==9 && won ==0){
+	console.log("call draw", this);
+	check_draw();
+	}
+
+	<!-- console.log("Beginner selected"); -->
+	var random_itemnum = Math.floor(Math.random()*9)+9;
+	str1 = "#";
+	str2 = array[random_itemnum];	
+	<!-- done; -->
+	
+	console.log("done entered",$(str1.concat(str2)).hasClass("unclickable"), (str2), clicked_array.indexOf(str2));
+	while(clicked_array.indexOf(str2)>0 && draw_done==0 && won==0){
+	<!-- for(var i = 1; i<10;i++){ -->
+	<!-- console.log("in for", i, clicked_array[i], str2); -->
+	<!-- console.log("in while", array[random_itemnum], clicked_array[i]); -->
+	random_itemnum = Math.floor(Math.random()*9)+9;
+	str2 = array[random_itemnum];
+	<!-- if(str2!=clicked_array[i]){ -->
+	<!-- console.log("2in while", str2, clicked_array[i]); -->
+	<!-- break; -->
+	}
+	<!-- } -->
+	
+	<!-- } -->
+
+	console.log("out of while",array[random_itemnum],item_clicked);
+	if($("#x").val()==1 && ($(str1.concat(str2)).hasClass("painto unclickable")!= 1 && $(str1.concat(str2)).hasClass("paintx unclickable")!= 1)){
+	item_clicked++;
+	<!-- console.log("Paint O here:", $(str1.concat(str2)), item_clicked); -->
+	$(str1.concat(str2)).addClass("painto unclickable");
+	$(str1.concat(str2)).html("O");
+	$(str1.concat(str2)).val(2);
+	++index;
+	clicked_array[index]=(str2);
+	<!-- console.log("3clicked_array[index]:", clicked_array[index], index); -->
+	player_now++;
+	}
+	
+	if($("#o").val()==1 && ($(str1.concat(str2)).hasClass("painto unclickable")!= 1 && $(str1.concat(str2)).hasClass("paintx unclickable")!= 1)){
+	item_clicked++;	
+	<!-- console.log("Paint X here:", $(str1.concat(str2)), item_clicked); -->
+	$(str1.concat(str2)).addClass("paintx unclickable");
+	$(str1.concat(str2)).html("X");
+	$(str1.concat(str2)).val(1);
+	++index;
+	clicked_array[index]=(str2);
+	<!-- console.log("4clicked_array[index]:", clicked_array[index], index); -->
+	player_now++;	
+	}	
+	
+	
+	if(item_clicked>=5){
+	check_winner(player_now);
+	}
+	if(item_clicked==9 && won ==0){
+	console.log("call draw", this);
+	check_draw();
+	}
+	
+	<!-- document.getElementById(array[(Math.floor(Math.random()*9))+8).addClass("painto unclickable"); -->
+	<!-- $(array[(Math.floor(Math.random()*9))+9).html("O"); -->
+	}
+	
+	
+	if(player_bot==0){
+	item_clicked++;
+	var playerOne = player_now;
+    console.log("this is: ", playerOne);
+
+
+    if (playerOne%2 == 1) {
+      $(this).addClass("paintx unclickable") //playerOne is always blue
+      $(this).html("X")
+	  $(this).val(1);
+    }
+    if (playerOne%2 == 0) {
+      $(this).addClass("painto unclickable") //playerOne is always blue
+      $(this).html("O")
+	  $(this).val(2);
+    }
+	
+	player_now++;
+	
+	
+	if($("#myList").val()=="pro"){
+	console.log("Professional selected");
+	}
+	
+	
+	if(item_clicked>=5){
+	
+	check_winner(player_now);
+	if(item_clicked==9 && won ==0){
+	check_draw();
+	}
+	
+	<!-- player_now++; -->
+    
+	}
+	}
+		
+	
+//    playGame() //call playGame r every click, to check for winner & whose turn
+	});
+  
+    $("#reset").click(function(event) {
+	console.log("Reset clicked");
+	location.reload();
+	});
+	
+	
+	$("#bot").click(function(event) {
+	console.log("Bot chosen");
+    $("#dff").addClass("unhide");
+	$("#difficulty").addClass("unhide");
+	})
+
+}
+clickButton(event)
+
+
+function check_winner(player_now){
+	console.log("Entered check_winner", $("#one").val() + $("#two").val() + $("#three").val());
+	if($("#one").val() + $("#two").val() + $("#three").val() == 111|| 
+	$("#four").val() + $("#five").val() + $("#six").val() == 111||
+	$("#seven").val() + $("#eight").val() + $("#nine").val() == 111||
+	$("#one").val() + $("#five").val() + $("#nine").val() == 111||
+	$("#three").val() + $("#five").val() + $("#seven").val() == 111||
+	$("#one").val() + $("#four").val() + $("#seven").val() == 111||
+	$("#two").val() + $("#five").val() + $("#eight").val() == 111||
+	$("#three").val() + $("#six").val() + $("#nine").val() == 111){
+	console.log("X is winner!");
+	$("#gameResult").html("X is winner!");
+	won = 1;
+	}
+	if($("#one").val() + $("#two").val() + $("#three").val() == 222|| 
+	$("#four").val() + $("#five").val() + $("#six").val() == 222||
+	$("#seven").val() + $("#eight").val() + $("#nine").val() == 222||
+	$("#one").val() + $("#five").val() + $("#nine").val() == 222||
+	$("#three").val() + $("#five").val() + $("#seven").val() == 222||
+	$("#one").val() + $("#four").val() + $("#seven").val() == 222||
+	$("#two").val() + $("#five").val() + $("#eight").val() == 222||
+	$("#three").val() + $("#six").val() + $("#nine").val() == 222){
+	console.log("O is winner!");
+	$("#gameResult").html("O is winner!");
+	won = 1;
+	}
+	if(won==1){
+	$(".item").addClass("unclickable");
+	}
+	
+}
+
+function check_draw(){
+	console.log("DRAW!");
+	draw_done = 1;
+	<!-- break; -->
+}
+
+
+
+</script>
+
+</body>
+</html>
